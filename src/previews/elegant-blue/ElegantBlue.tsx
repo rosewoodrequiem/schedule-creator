@@ -7,6 +7,7 @@ import {
   weekDates,
 } from "../../utils/date";
 import NoiseOverlay from "../../components/NoiseOverlay";
+import { DayCard } from "./DayCard";
 
 export default function ElegantBlue({
   captureId = "capture-root",
@@ -31,7 +32,7 @@ export default function ElegantBlue({
     <div className="elegant-blue-theme">
       <div
         id={captureId}
-        className="elegant-blue-theme bg-base relative overflow-hidden rounded-2xl border shadow-2xl"
+        className="elegant-blue-theme bg-base text-text font-heading relative overflow-hidden rounded-2xl border shadow-2xl"
         style={{ width: 1920, height: 1080 }}
       >
         {/* decorative soft highlight */}
@@ -48,7 +49,7 @@ export default function ElegantBlue({
           {/* week badge */}
           <div className="absolute top-8 left-8">
             <div
-              className="rounded-xl px-4 py-3 font-semibold text-[#1e2a3a]"
+              className="font-semibold] rounded-xl px-4 py-3"
               style={{
                 background: "rgba(255,255,255,0.5)",
                 backdropFilter: "blur(4px)",
@@ -59,16 +60,14 @@ export default function ElegantBlue({
           </div>
 
           {/* big title */}
-          <div className="font-heading text-primary absolute top-8 left-52 text-[120px] leading-none font-extrabold select-none">
+          <div className="font-heading text-primary text-shadow-[var(--text-glow)] absolute top-8 left-52 text-[120px] leading-none font-extrabold select-none">
             Schedule
           </div>
 
           {/* day cards column */}
           <div className="absolute top-44 right-[50%] bottom-16 left-8 flex flex-col gap-18 pr-6">
             {enabledKeys.length === 0 && (
-              <div className="text-sm text-[#1e2a3a] opacity-70">
-                No days selected
-              </div>
+              <div className="text-sm opacity-70">No days selected</div>
             )}
 
             {enabledKeys.map((key) => {
@@ -78,71 +77,17 @@ export default function ElegantBlue({
               const when = plan.time
                 ? fmtDateTime(date, plan.time, plan.timezone)
                 : "Time TBD";
-
+              const formattedDate = shortMonthDay(date);
               return (
-                <div
+                <DayCard
                   key={key}
-                  className="relative grid grid-cols-[1fr_320px] items-center overflow-hidden rounded-2xl"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.30) 65%, rgba(255,255,255,0.24) 82%, rgba(255,255,255,0.20) 100%)",
-                    backdropFilter: "blur(6px)",
-                    border: "1px solid rgba(255,255,255,0.45)",
-                  }}
-                >
-                  {/* left content */}
-                  <div className="relative z-10 flex items-center gap-4 p-4 pl-6">
-                    <div className="w-12 text-xs font-bold tracking-widest text-[#1e2a3a] uppercase">
-                      {DAY_LABELS[key].slice(0, 3)}
-                    </div>
-
-                    <div className="flex min-w-0 items-center gap-4">
-                      <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-white/60">
-                        {plan.logoUrl ? (
-                          <img
-                            src={plan.logoUrl}
-                            alt=""
-                            className="h-full w-full object-contain"
-                          />
-                        ) : (
-                          <span className="text-xs text-[#1e2a3a]/70">
-                            Logo
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="min-w-0">
-                        <div className="truncate text-2xl font-extrabold text-[#1e2a3a]">
-                          {plan.gameName || "Untitled Game"}
-                        </div>
-                        <div className="text-lg text-[#1e2a3a] opacity-80">
-                          {when.replace(",", "")}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* right banner */}
-                  <div className="relative h-[110px]">
-                    {plan.graphicUrl ? (
-                      <img
-                        src={plan.graphicUrl}
-                        alt=""
-                        className="absolute inset-0 h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-[#7e96b7]" />
-                    )}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(90deg, rgba(144,164,191,0) 0%, rgba(144,164,191,0.55) 55%, rgba(144,164,191,0.75) 72%, rgba(144,164,191,0.9) 88%, rgba(144,164,191,1) 100%)",
-                      }}
-                    />
-                    <div className="absolute inset-0 ring-1 ring-white/40" />
-                  </div>
-                </div>
+                  day={DAY_LABELS[key]}
+                  gameName={plan.gameName}
+                  when={when}
+                  date={formattedDate}
+                  logoUrl={plan.logoUrl}
+                  graphicUrl={plan.graphicUrl}
+                />
               );
             })}
           </div>
