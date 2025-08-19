@@ -1,10 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Playball&display=swap");
 @import "tailwindcss";
 
-/* simple theme tokens you can tweak */
-@theme {
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --color-brand: #ff2952;
+/* Theme colors */
+@theme inline {
+  --color-primary: var(--token-color-primary);
+  --color-base: var(--token-color-secondary);
+  --color-text: var(--token-color-text);
+  --font-heading: var(--token-font-heading);
+}
+
+@layer base {
+  :root {
+    /* Global theme-independent primitive definitions */
+    --primitive-blue-500: #4f7cb3;
+    --primitive-blue-600: #8da5cb;
+    --primitive-gray-900: #1e2a3a;
+    --primitive-playball: "Playball", cursive;
+  }
+
+  .elegant-blue-theme {
+    /* Elegant Blue theme token definitions */
+    --token-color-primary: var(--primitive-blue-500);
+    --token-color-base: var(--primitive-blue-600);
+    --token-color-text: var(--primitive-gray-900);
+    --token-font-heading: var(--primitive-playball);
+  }
+
+  .elegant-blue-theme {
+    /* Elegant Blue theme token definitions */
+    --token-font-heading: var(--primitive-playball);
+    --token-color-primary: var(--primitive-blue-500);
+    --token-color-secondary: var(--primitive-blue-600);
+    --token-color-text: var(--primitive-gray-900);
+  }
 }
 
 html,
