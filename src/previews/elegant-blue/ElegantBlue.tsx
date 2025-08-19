@@ -1,13 +1,13 @@
-import React from "react";
-import { useScheduleStore } from "../store/useScheduleStore";
-import type { DayKey } from "../types";
+import { useScheduleStore } from "../../store/useScheduleStore";
+import type { DayKey } from "../../types";
 import {
   DAY_LABELS,
   fmtDateTime,
   shortMonthDay,
   weekDates,
-} from "../utils/date";
-import NoiseOverlay from "../components/NoiseOverlay";
+} from "../../utils/date";
+import NoiseOverlay from "../../components/NoiseOverlay";
+import "./ElegantBlue.css";
 
 export default function ElegantBlue({
   captureId = "capture-root",

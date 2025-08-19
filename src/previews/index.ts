@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import ElegantBlue from "./ElegantBlue";
+import ElegantBlue from "./elegant-blue/ElegantBlue";
 
 export type PreviewProps = {
   captureId?: string;
