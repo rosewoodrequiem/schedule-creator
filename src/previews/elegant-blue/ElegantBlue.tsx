@@ -31,12 +31,12 @@ export default function ElegantBlue({
     <div className="elegant-blue-theme">
       <div
         id={captureId}
-        className="elegant-blue-theme relative overflow-hidden rounded-2xl shadow-2xl border bg-base"
+        className="elegant-blue-theme bg-base relative overflow-hidden rounded-2xl border shadow-2xl"
         style={{ width: 1920, height: 1080 }}
       >
         {/* decorative soft highlight */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
               "radial-gradient(1000px 600px at 20% 0%, rgba(255,255,255,0.18), rgba(255,255,255,0) 60%)",
@@ -46,7 +46,7 @@ export default function ElegantBlue({
         {/* LEFT: header + cards (put above hero via z-index) */}
         <div className="relative z-20 h-full">
           {/* week badge */}
-          <div className="absolute left-8 top-8">
+          <div className="absolute top-8 left-8">
             <div
               className="rounded-xl px-4 py-3 font-semibold text-[#1e2a3a]"
               style={{
@@ -59,14 +59,14 @@ export default function ElegantBlue({
           </div>
 
           {/* big title */}
-          <div className="absolute left-52 top-8 text-[120px] leading-none font-heading font-extrabold text-primary select-none">
+          <div className="font-heading text-primary absolute top-8 left-52 text-[120px] leading-none font-extrabold select-none">
             Schedule
           </div>
 
           {/* day cards column */}
-          <div className="absolute left-8 top-44 bottom-16 right-[50%] pr-6 flex flex-col gap-18">
+          <div className="absolute top-44 right-[50%] bottom-16 left-8 flex flex-col gap-18 pr-6">
             {enabledKeys.length === 0 && (
-              <div className="text-[#1e2a3a] text-sm opacity-70">
+              <div className="text-sm text-[#1e2a3a] opacity-70">
                 No days selected
               </div>
             )}
@@ -82,7 +82,7 @@ export default function ElegantBlue({
               return (
                 <div
                   key={key}
-                  className="relative grid grid-cols-[1fr_320px] items-center rounded-2xl overflow-hidden"
+                  className="relative grid grid-cols-[1fr_320px] items-center overflow-hidden rounded-2xl"
                   style={{
                     background:
                       "linear-gradient(90deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.30) 65%, rgba(255,255,255,0.24) 82%, rgba(255,255,255,0.20) 100%)",
@@ -91,18 +91,18 @@ export default function ElegantBlue({
                   }}
                 >
                   {/* left content */}
-                  <div className="relative z-10 p-4 pl-6 flex items-center gap-4">
-                    <div className="text-[#1e2a3a] text-xs font-bold tracking-widest uppercase w-12">
+                  <div className="relative z-10 flex items-center gap-4 p-4 pl-6">
+                    <div className="w-12 text-xs font-bold tracking-widest text-[#1e2a3a] uppercase">
                       {DAY_LABELS[key].slice(0, 3)}
                     </div>
 
-                    <div className="flex items-center gap-4 min-w-0">
-                      <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-white/60 grid place-items-center">
+                    <div className="flex min-w-0 items-center gap-4">
+                      <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-white/60">
                         {plan.logoUrl ? (
                           <img
                             src={plan.logoUrl}
                             alt=""
-                            className="w-full h-full object-contain"
+                            className="h-full w-full object-contain"
                           />
                         ) : (
                           <span className="text-xs text-[#1e2a3a]/70">
@@ -112,7 +112,7 @@ export default function ElegantBlue({
                       </div>
 
                       <div className="min-w-0">
-                        <div className="text-2xl font-extrabold text-[#1e2a3a] truncate">
+                        <div className="truncate text-2xl font-extrabold text-[#1e2a3a]">
                           {plan.gameName || "Untitled Game"}
                         </div>
                         <div className="text-lg text-[#1e2a3a] opacity-80">
@@ -128,7 +128,7 @@ export default function ElegantBlue({
                       <img
                         src={plan.graphicUrl}
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-[#7e96b7]" />
@@ -149,12 +149,12 @@ export default function ElegantBlue({
         </div>
 
         {/* RIGHT: hero image (kept underneath cards) */}
-        <div className="absolute inset-y-0 right-0 w-[48%] z-10">
+        <div className="absolute inset-y-0 right-0 z-10 w-[48%]">
           {hero ? (
             <img
               src={hero}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
             <div className="absolute inset-0 bg-[#6b87aa]" />
@@ -174,7 +174,7 @@ export default function ElegantBlue({
         <NoiseOverlay opacity={0.025} zIndex={5} radius={24} />
 
         {/* footer */}
-        <div className="absolute bottom-6 left-8 text-[#1e2a3a] text-sm opacity-80 z-20">
+        <div className="absolute bottom-6 left-8 z-20 text-sm text-[#1e2a3a] opacity-80">
           @evermoreradio · @EvermoreRadio
         </div>
       </div>
