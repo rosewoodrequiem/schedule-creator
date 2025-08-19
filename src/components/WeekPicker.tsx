@@ -1,23 +1,21 @@
 import React from "react";
+import { useScheduleStore } from "../store/useScheduleStore";
 import { toISODate, weekDates } from "../utils/date";
+import Button from "./ui/Button";
 
-type Props = {
-  weekStart: "sun" | "mon";
-  anchorISO: string;
-  onChangeStart: (v: "sun" | "mon") => void;
-  onChangeAnchor: (iso: string) => void;
-  onQuickSet: (type: "this" | "next") => void;
-};
+export default function WeekPicker() {
+  const weekStart = useScheduleStore((s) => s.week.weekStart);
+  const anchorISO = useScheduleStore((s) => s.week.weekAnchorDate);
+  const updateWeek = useScheduleStore((s) => s.updateWeek);
 
-export default function WeekPicker({
-  weekStart,
-  anchorISO,
-  onChangeAnchor,
-  onChangeStart,
-  onQuickSet,
-}: Props) {
   const dates = weekDates(anchorISO, weekStart);
-  const rangeLabel = `${dates[0].toLocaleDateString()} – ${dates[6].toLocaleDateString()}`;
+  const range = `${dates[0].toLocaleDateString()} – ${dates[6].toLocaleDateString()}`;
+
+  function shiftWeeks(delta: number) {
+    const d = new Date(anchorISO);
+    d.setDate(d.getDate() + delta * 7);
+    updateWeek({ weekAnchorDate: toISODate(d) });
+  }
 
   return (
     <div className="space-y-2">
@@ -28,7 +26,7 @@ export default function WeekPicker({
         <select
           className="border rounded-lg px-2 py-1"
           value={weekStart}
-          onChange={(e) => onChangeStart(e.target.value as "sun" | "mon")}
+          onChange={(e) => updateWeek({ weekStart: e.target.value as any })}
         >
           <option value="sun">Sunday</option>
           <option value="mon">Monday</option>
@@ -39,27 +37,33 @@ export default function WeekPicker({
           type="date"
           className="border rounded-lg px-2 py-1"
           value={anchorISO}
-          onChange={(e) => onChangeAnchor(e.target.value)}
+          onChange={(e) => updateWeek({ weekAnchorDate: e.target.value })}
         />
       </div>
 
-      <div className="flex gap-2">
-        <button
-          className="px-3 py-1 border rounded-lg"
-          onClick={() => onQuickSet("this")}
+      <div className="flex items-center gap-2">
+        <Button
+          className="bg-white border hover:bg-[#f3f4f6]"
+          onClick={() => shiftWeeks(-1)}
+        >
+          ← Prev week
+        </Button>
+        <Button
+          className="bg-white border hover:bg-[#f3f4f6]"
+          onClick={() => shiftWeeks(1)}
+        >
+          Next week →
+        </Button>
+        <Button
+          className="bg-white border hover:bg-[#f3f4f6]"
+          onClick={() => updateWeek({ weekAnchorDate: toISODate(new Date()) })}
         >
           This week
-        </button>
-        <button
-          className="px-3 py-1 border rounded-lg"
-          onClick={() => onQuickSet("next")}
-        >
-          Next week
-        </button>
+        </Button>
       </div>
 
-      <div className="text-xs text-[--color-muted,#94a3b8]">
-        Week range: {rangeLabel}
+      <div className="text-xs text-[--color-muted,#64748b]">
+        Week range: {range}
       </div>
     </div>
   );

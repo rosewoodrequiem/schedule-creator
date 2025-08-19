@@ -1,19 +1,14 @@
 import React from "react";
 import type { DayPlan } from "../types";
+import Button from "./ui/Button";
+import FilePicker from "./ui/FilePicker";
 
-type Props = {
-  plan: DayPlan;
-  onChange: (next: DayPlan) => void;
-};
+type Props = { plan: DayPlan; onChange: (next: DayPlan) => void };
 
 export default function DayInlineEditor({ plan, onChange }: Props) {
-  function onFile(
-    e: React.ChangeEvent<HTMLInputElement>,
-    key: "logoUrl" | "graphicUrl"
-  ) {
-    const f = e.target.files?.[0];
-    if (!f) return onChange({ ...plan, [key]: undefined });
-    const url = URL.createObjectURL(f);
+  function setFile(key: "logoUrl" | "graphicUrl", file?: File) {
+    if (!file) return onChange({ ...plan, [key]: undefined });
+    const url = URL.createObjectURL(file);
     onChange({ ...plan, [key]: url });
   }
 
@@ -40,52 +35,48 @@ export default function DayInlineEditor({ plan, onChange }: Props) {
       </label>
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <div className="text-sm font-semibold">Game logo</div>
-          <input
-            type="file"
-            accept="image/*"
-            className="mt-1 w-full"
-            onChange={(e) => onFile(e, "logoUrl")}
+        {/* Logo */}
+        <div className="space-y-2">
+          <FilePicker
+            label="Game logo"
+            onFile={(file) => setFile("logoUrl", file)}
           />
           {plan.logoUrl && (
-            <div className="mt-2 border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden">
               <img
                 src={plan.logoUrl}
                 alt="Logo preview"
                 className="w-full h-28 object-contain bg-white"
               />
-              <button
-                className="w-full text-xs py-1 border-t"
+              <Button
+                className="w-full text-xs bg-white border hover:bg-[#f3f4f6]"
                 onClick={() => onChange({ ...plan, logoUrl: undefined })}
               >
                 Clear
-              </button>
+              </Button>
             </div>
           )}
         </div>
 
-        <div>
-          <div className="text-sm font-semibold">Game graphic</div>
-          <input
-            type="file"
-            accept="image/*"
-            className="mt-1 w-full"
-            onChange={(e) => onFile(e, "graphicUrl")}
+        {/* Graphic */}
+        <div className="space-y-2">
+          <FilePicker
+            label="Game graphic"
+            onFile={(file) => setFile("graphicUrl", file)}
           />
           {plan.graphicUrl && (
-            <div className="mt-2 border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden">
               <img
                 src={plan.graphicUrl}
                 alt="Graphic preview"
                 className="w-full h-28 object-cover"
               />
-              <button
-                className="w-full text-xs py-1 border-t"
+              <Button
+                className="w-full text-xs bg-white border hover:bg-[#f3f4f6]"
                 onClick={() => onChange({ ...plan, graphicUrl: undefined })}
               >
                 Clear
-              </button>
+              </Button>
             </div>
           )}
         </div>

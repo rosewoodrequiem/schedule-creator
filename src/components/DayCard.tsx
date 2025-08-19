@@ -1,65 +1,36 @@
-import React from "react";
-import type { DayPlan } from "../types";
-import { shortMonthDay } from "../utils/date";
+import React, { useState } from "react";
 
-type Props = {
-  date: Date;
-  label: string; // "Monday"
-  plan: DayPlan;
-  onToggle: (enabled: boolean) => void;
-  onEdit: () => void;
-  formattedWhen?: string; // e.g., "Jul 23, 8:00 PM EST"
+type DayCardProps = {
+  day: string;
+  events: string[];
 };
 
-export default function DayCard({
-  date,
-  label,
-  plan,
-  onToggle,
-  onEdit,
-  formattedWhen,
-}: Props) {
-  const sub = shortMonthDay(date);
-  return (
-    <div className="rounded-2xl p-4 border bg-white/50">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-sm font-semibold">{label}</div>
-          <div className="text-xs text-[--color-muted,#94a3b8]">{sub}</div>
-        </div>
-        <label className="inline-flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="size-4"
-            checked={plan.enabled}
-            onChange={(e) => onToggle(e.target.checked)}
-          />
-          Streaming
-        </label>
-      </div>
+const DayCard: React.FC<DayCardProps> = ({ day, events }) => {
+  const [open, setOpen] = useState(true);
 
-      {plan.enabled ? (
-        <div className="mt-3 space-y-2">
-          <div className="text-sm">
-            <span className="font-semibold">
-              {plan.gameName || "Untitled Game"}
-            </span>
-          </div>
-          <div className="text-xs text-[--color-muted,#94a3b8]">
-            {formattedWhen || "Set time…"}
-          </div>
-          <button
-            className="px-3 py-1 rounded-lg bg-[--color-brand] text-white"
-            onClick={onEdit}
-          >
-            Edit details
-          </button>
-        </div>
-      ) : (
-        <div className="mt-3 text-xs text-[--color-muted,#94a3b8]">
-          No stream planned
+  return (
+    <div className="border rounded-md bg-white shadow-sm">
+      <div
+        className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-gray-100"
+        onClick={() => setOpen(!open)}
+      >
+        <span className="font-semibold">{day}</span>
+        <span className="text-gray-500">{open ? "▼" : "▶"}</span>
+      </div>
+      {open && (
+        <div className="px-3 pb-2">
+          {events.map((event, i) => (
+            <div
+              key={i}
+              className="text-sm text-gray-700 py-1 border-b last:border-none"
+            >
+              {event}
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
-}
+};
+
+export default DayCard;

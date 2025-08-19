@@ -1,39 +1,14 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import html2canvas from "html2canvas-pro";
-import type { DayKey, DayPlan, WeekPlan } from "./types";
-import {
-  DAY_KEYS,
-  DAY_LABELS,
-  fmtDateTime,
-  toISODate,
-  weekDates,
-} from "./utils/date";
+import { useScheduleStore } from "./store/useScheduleStore";
+import type { DayKey } from "./types";
+import { DAY_KEYS, DAY_LABELS } from "./utils/date";
 import WeekPicker from "./components/WeekPicker";
 import SchedulePreview from "./components/SchedulePreview";
-import DayInlineEditor from "./components/DayInlineEditor";
-
-const BROWSER_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-
-const DEFAULT_DAY: DayPlan = {
-  enabled: false,
-  gameName: "",
-  time: "",
-  timezone: BROWSER_TZ, // locked to browser tz
-  logoUrl: undefined,
-  graphicUrl: undefined,
-};
-
-function makeDefaultWeek(): WeekPlan {
-  const todayISO = toISODate(new Date());
-  const days = Object.fromEntries(
-    DAY_KEYS.map((k) => [k, { ...DEFAULT_DAY }])
-  ) as Record<DayKey, DayPlan>;
-  return {
-    weekAnchorDate: todayISO,
-    weekStart: "mon",
-    days,
-  };
-}
+import TemplatePicker from "./components/TemplatePicker";
+import ScaledPreview from "./components/ScaledPreview";
+import Button from "./components/ui/Button";
+import DayAccordion from "./components/DayAccordion";
 
 const SHORTS: Record<DayKey, string> = {
   sun: "Sun",
@@ -46,36 +21,21 @@ const SHORTS: Record<DayKey, string> = {
 };
 
 export default function App() {
-  const [state, setState] = useState<WeekPlan>(makeDefaultWeek());
+  const week = useScheduleStore((s) => s.week);
+  const updateDay = useScheduleStore((s) => s.updateDay);
+  const setDay = useScheduleStore((s) => s.setDay);
+  const setHeroUrl = useScheduleStore((s) => s.setHeroUrl);
+
   const [exportScale, setExportScale] = useState(2);
 
-  const dates = useMemo(
-    () => weekDates(state.weekAnchorDate, state.weekStart),
-    [state.weekAnchorDate, state.weekStart]
-  );
-
-  // display order based on week start
   const dayOrder: DayKey[] =
-    state.weekStart === "sun"
+    week.weekStart === "sun"
       ? ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
       : ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
-  const captureRef = useRef<HTMLDivElement>(null);
-
-  function updateDay(key: DayKey, next: Partial<DayPlan>) {
-    setState((s) => ({
-      ...s,
-      days: { ...s.days, [key]: { ...s.days[key], ...next } },
-    }));
-  }
-  function setDayPlan(key: DayKey, next: DayPlan) {
-    setState((s) => ({ ...s, days: { ...s.days, [key]: next } }));
-  }
-
   async function handleExport() {
-    const node = captureRef.current;
+    const node = document.getElementById("capture-root");
     if (!node) return;
-    // ensure fonts
     // @ts-ignore
     if (document.fonts?.ready) await document.fonts.ready;
 
@@ -85,7 +45,6 @@ export default function App() {
       useCORS: true,
       removeContainer: true,
     });
-
     const blob = await new Promise<Blob | null>((res) =>
       canvas.toBlob((b) => res(b), "image/png")
     );
@@ -99,55 +58,43 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen grid md:grid-cols-[420px_1fr]">
-      {/* LEFT: Controls */}
-      <aside className="border-r p-4 space-y-4 bg-white">
-        {/* header with Export */}
-        <div className="flex items-center justify-between">
+    <div className="h-full grid md:grid-cols-[460px_1fr]">
+      {/* LEFT: Controls (scrollable) */}
+      <aside className="border-r p-4 space-y-4 bg-white sidebar-scroll">
+        <div className="flex items-center justify-between sticky top-0 bg-white pb-2">
           <div className="text-lg font-bold">Schedule Maker</div>
-          <button
+          <Button
             onClick={handleExport}
-            className="px-3 py-2 rounded-lg bg-[#111827] text-white"
-            title="Export a high-resolution PNG of the preview"
+            className="bg-[#111827] text-white"
+            hoverClass="hover:bg-black"
           >
             Export PNG
-          </button>
+          </Button>
         </div>
 
-        {/* export scale */}
-        <label className="block text-xs">
-          Export scale (1–4)
-          <input
-            type="number"
-            min={1}
-            max={4}
-            value={exportScale}
-            onChange={(e) => setExportScale(Number(e.target.value))}
-            className="ml-2 w-20 border rounded-lg px-2 py-1"
-          />
-        </label>
+        <div className="flex items-center gap-3">
+          <TemplatePicker />
+          <label className="block text-xs">
+            Export scale (1–4)
+            <input
+              type="number"
+              min={1}
+              max={4}
+              value={exportScale}
+              onChange={(e) => setExportScale(Number(e.target.value))}
+              className="ml-2 w-20 border rounded-lg px-2 py-1"
+            />
+          </label>
+        </div>
 
-        {/* week picker */}
-        <WeekPicker
-          weekStart={state.weekStart}
-          anchorISO={state.weekAnchorDate}
-          onChangeStart={(v) => setState((s) => ({ ...s, weekStart: v }))}
-          onChangeAnchor={(iso) =>
-            setState((s) => ({ ...s, weekAnchorDate: iso }))
-          }
-          onQuickSet={(type) => {
-            const now = new Date();
-            if (type === "next") now.setDate(now.getDate() + 7);
-            setState((s) => ({ ...s, weekAnchorDate: toISODate(now) }));
-          }}
-        />
+        <WeekPicker />
 
         {/* Day checklist chips */}
         <div className="space-y-2">
           <div className="text-sm font-semibold">Streaming days</div>
           <div className="flex flex-wrap gap-2">
             {dayOrder.map((key) => {
-              const enabled = state.days[key].enabled;
+              const enabled = week.days[key].enabled;
               return (
                 <label
                   key={key}
@@ -156,7 +103,8 @@ export default function App() {
                       enabled
                         ? "bg-[--color-brand] text-black"
                         : "bg-white text-black"
-                    }`}
+                    }
+                    hover:brightness-105`}
                 >
                   <input
                     type="checkbox"
@@ -172,47 +120,81 @@ export default function App() {
             })}
           </div>
           <div className="text-xs text-[--color-muted,#64748b]">
-            Check the days you’re streaming. Checked days show inputs below
-            (timezone auto-uses your browser).
+            Check days you’re streaming, then expand any day to edit details.
           </div>
         </div>
 
-        {/* Inline editors for checked days (no timezone control) */}
-        <div className="space-y-3 pt-2">
-          {dayOrder.map((key, i) => {
-            const plan = state.days[key];
+        {/* Hero image override */}
+        <div className="space-y-2">
+          <div className="text-sm font-semibold">Hero image (optional)</div>
+          <div className="flex items-center gap-3">
+            <Button
+              className="bg-[--color-brand] text-black"
+              hoverClass="hover:brightness-105"
+              onClick={() =>
+                document.getElementById("hero-file-input")?.click()
+              }
+            >
+              Select hero image
+            </Button>
+            <input
+              id="hero-file-input"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (!f) return setHeroUrl(undefined);
+                setHeroUrl(URL.createObjectURL(f));
+              }}
+            />
+            <Button
+              className="bg-white border hover:bg-[#f3f4f6]"
+              onClick={() => setHeroUrl(undefined)}
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
+
+        {/* Collapsible day cards for enabled days */}
+        <div className="space-y-3 pt-2 pb-8">
+          {dayOrder.map((key, idx) => {
+            const plan = week.days[key];
             if (!plan.enabled) return null;
+
+            // derive the date for this key from the current week order
+            // NOTE: WeekPicker controls the anchor date; previews use weekDates internally.
+            // For sidebar cards we only need the weekday label; using today's mapping is fine.
+            // If you want exact date mapping here too, lift the weekDates calc into store and pass in.
+            const anchor = new Date(week.weekAnchorDate);
+            const startIdx = week.weekStart === "sun" ? 0 : 1;
+            const diffFromStart =
+              (
+                ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as DayKey[]
+              ).indexOf(key) - startIdx;
+            const date = new Date(anchor);
+            date.setDate(anchor.getDate() + diffFromStart);
+
             return (
-              <div key={key} className="rounded-2xl border p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm font-semibold">{DAY_LABELS[key]}</div>
-                  <button
-                    className="text-xs px-2 py-1 border rounded-lg"
-                    onClick={() => updateDay(key, { enabled: false })}
-                    title="Hide this day"
-                  >
-                    Hide
-                  </button>
-                </div>
-                <DayInlineEditor
-                  plan={plan}
-                  onChange={(next) => setDayPlan(key, next)}
-                />
-              </div>
+              <DayAccordion
+                key={key}
+                dayKey={key}
+                date={date}
+                plan={plan}
+                onChange={(next) => setDay(key, next)}
+                onDisable={() => updateDay(key, { enabled: false })}
+              />
             );
           })}
         </div>
       </aside>
 
-      {/* RIGHT: Preview */}
-      <main className="p-4 overflow-auto">
-        <div ref={captureRef}>
-          <SchedulePreview
-            weekDates={dates}
-            byKey={state.days}
-            dayOrder={dayOrder}
-          />
-        </div>
+      {/* RIGHT: Preview (no scroll; scaled to fit) */}
+      <main className="p-4 overflow-hidden bg-[#f8fafc]">
+        <ScaledPreview targetWidth={1920} targetHeight={1080} margin={16}>
+          <SchedulePreview />
+        </ScaledPreview>
       </main>
     </div>
   );

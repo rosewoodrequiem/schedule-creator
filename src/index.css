@@ -11,9 +11,20 @@ html,
 body,
 #root {
   height: 100%;
+  overflow: hidden; /* no document scroll */
+}
+
+/* optional: nicer scrolling in the sidebar only */
+.sidebar-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 #capture-root * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.cta {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
