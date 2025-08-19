@@ -34,27 +34,73 @@ export default function App() {
       : ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
   async function handleExport() {
-    const node = document.getElementById("capture-root");
-    if (!node) return;
+    const src = document.getElementById("capture-root");
+    if (!src) return;
+
+    // Ensure fonts are loaded
     // @ts-ignore
     if (document.fonts?.ready) await document.fonts.ready;
 
-    const canvas = await html2canvas(node, {
-      scale: Math.max(1, Math.min(4, exportScale || 2)),
-      backgroundColor: null,
-      useCORS: true,
-      removeContainer: true,
+    // Clone the node so we can render it at 1:1 scale with no transforms
+    const clone = src.cloneNode(true) as HTMLElement;
+
+    // Make sure the clone is positioned off-screen and not scaled
+    Object.assign(clone.style, {
+      position: "fixed",
+      left: "-100000px",
+      top: "0",
+      transform: "none",
+      zoom: "1",
     });
-    const blob = await new Promise<Blob | null>((res) =>
-      canvas.toBlob((b) => res(b), "image/png")
-    );
-    if (!blob) return;
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "schedule.png";
-    a.click();
-    URL.revokeObjectURL(url);
+
+    // Important: ensure the clone has the intended fixed canvas size
+    // (your preview templates already set width/height inline, so this is usually redundant,
+    // but we keep it for safety in case you change templates)
+    clone.id = "capture-root-clone"; // avoid duplicate IDs during query
+
+    // Append to DOM so computed styles resolve correctly
+    document.body.appendChild(clone);
+
+    const pixelRatio = Math.max(window.devicePixelRatio || 1, 2);
+    const targetScale = Math.max(exportScale || 2, pixelRatio * 1.5);
+
+    try {
+      const canvas = await html2canvas(clone, {
+        scale: targetScale,
+        backgroundColor: null,
+        useCORS: true,
+        removeContainer: true,
+        // Extra safety: ignore any transforms on ancestors (we cloned, but this helps if you nest later)
+        onclone: (doc) => {
+          const el = doc.getElementById(
+            "capture-root-clone"
+          ) as HTMLElement | null;
+          if (el) {
+            // Force no transforms on the cloned tree’s ancestors as well
+            let p = el.parentElement;
+            while (p) {
+              p.style.transform = "none";
+              p = p.parentElement;
+            }
+          }
+        },
+      });
+
+      const blob = await new Promise<Blob | null>((res) =>
+        canvas.toBlob((b) => res(b), "image/png")
+      );
+      if (!blob) return;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "schedule.png";
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      // Clean up the clone
+      clone.remove();
+    }
   }
 
   return (
