@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import html2canvas from "html2canvas-pro";
 import { useScheduleStore } from "./store/useScheduleStore";
 import type { DayKey } from "./types";
-import { DAY_KEYS, DAY_LABELS } from "./utils/date";
 import WeekPicker from "./components/WeekPicker";
 import SchedulePreview from "./components/SchedulePreview";
 import TemplatePicker from "./components/TemplatePicker";
@@ -42,18 +40,6 @@ export default function App() {
     // @ts-ignore
     if (document.fonts?.ready) await document.fonts.ready;
 
-    // Optional: clone at 1:1 to avoid any CSS scale side-effects
-    const clone = src.cloneNode(true) as HTMLElement;
-    Object.assign(clone.style, {
-      position: "fixed",
-      left: "-100000px",
-      top: "0",
-      transform: "none",
-      zoom: "1",
-    });
-    clone.id = "capture-root-export";
-    document.body.appendChild(clone);
-
     try {
       const pixelRatio = Math.max(window.devicePixelRatio || 1, 2);
       const dataUrl = await htmlToImage.toPng(src, {
@@ -69,8 +55,9 @@ export default function App() {
       a.href = dataUrl;
       a.download = "schedule.png";
       a.click();
-    } finally {
-      clone.remove();
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert("Failed to export schedule.");
     }
   }
 
