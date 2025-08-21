@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useScheduleStore } from "./store/useScheduleStore";
 import type { DayKey } from "./types";
-import WeekPicker from "./components/WeekPicker";
-import SchedulePreview from "./components/SchedulePreview";
-import TemplatePicker from "./components/TemplatePicker";
-import ScaledPreview from "./components/ScaledPreview";
-import Button from "./components/ui/Button";
-import DayAccordion from "./components/DayAccordion";
+import WeekPicker from "./editor/components/WeekPicker";
+import SchedulePreview from "./canvas/SchedulePreview";
+import TemplatePicker from "./editor/components/TemplatePicker";
+import ScaledPreview from "./canvas/ScaledPreview";
+import Button from "./editor/ui/Button";
+import DayAccordion from "./editor/components/DayAccordion";
 import * as htmlToImage from "html-to-image";
 
 const SHORTS: Record<DayKey, string> = {

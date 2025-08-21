@@ -1,7 +1,7 @@
 import React from "react";
-import type { DayPlan, DayKey } from "../types";
-import { DAY_LABELS, fmtTime, shortMonthDay } from "../utils/date";
-import Button from "./ui/Button";
+import type { DayPlan, DayKey } from "../../types";
+import { DAY_LABELS, fmtTime, shortMonthDay } from "../../utils/date";
+import Button from "../ui/Button";
 import DayInlineEditor from "./DayInlineEditor";
 
 type Props = {

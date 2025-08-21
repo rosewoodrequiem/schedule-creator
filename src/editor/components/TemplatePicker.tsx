@@ -1,5 +1,5 @@
 import React from "react";
-import { useScheduleStore } from "../store/useScheduleStore";
+import { useScheduleStore } from "../../store/useScheduleStore";
 
 export default function TemplatePicker() {
   const template = useScheduleStore((s) => s.template);
@@ -9,7 +9,7 @@ export default function TemplatePicker() {
     <label className="block text-xs">
       Preview style
       <select
-        className="ml-2 border rounded-lg px-2 py-1"
+        className="ml-2 rounded-lg border px-2 py-1"
         value={template}
         onChange={(e) => setTemplate(e.target.value as any)}
       >

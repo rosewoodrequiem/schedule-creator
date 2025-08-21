@@ -11,7 +11,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 h-full overflow-y-auto space-y-3 p-3 bg-gray-50 border-r">
+    <div className="h-full w-64 space-y-3 overflow-y-auto border-r bg-gray-50 p-3">
       {week.map((d) => (
         <DayCard key={d.day} day={d.day} events={d.events} />
       ))}

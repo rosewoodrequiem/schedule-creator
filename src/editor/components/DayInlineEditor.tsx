@@ -1,7 +1,7 @@
 import React from "react";
-import type { DayPlan } from "../types";
-import Button from "./ui/Button";
-import FilePicker from "./ui/FilePicker";
+import type { DayPlan } from "../../types";
+import Button from "../ui/Button";
+import FilePicker from "../ui/FilePicker";
 
 type Props = { plan: DayPlan; onChange: (next: DayPlan) => void };
 
@@ -17,7 +17,7 @@ export default function DayInlineEditor({ plan, onChange }: Props) {
       <label className="block text-sm">
         Game name
         <input
-          className="mt-1 w-full border rounded-lg p-2"
+          className="mt-1 w-full rounded-lg border p-2"
           value={plan.gameName}
           onChange={(e) => onChange({ ...plan, gameName: e.target.value })}
           placeholder="e.g., Baldur’s Gate 3"
@@ -28,7 +28,7 @@ export default function DayInlineEditor({ plan, onChange }: Props) {
         Time
         <input
           type="time"
-          className="mt-1 w-full border rounded-lg p-2"
+          className="mt-1 w-full rounded-lg border p-2"
           value={plan.time}
           onChange={(e) => onChange({ ...plan, time: e.target.value })}
         />
@@ -42,14 +42,14 @@ export default function DayInlineEditor({ plan, onChange }: Props) {
             onFile={(file) => setFile("logoUrl", file)}
           />
           {plan.logoUrl && (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="overflow-hidden rounded-lg border">
               <img
                 src={plan.logoUrl}
                 alt="Logo preview"
-                className="w-full h-28 object-contain bg-white"
+                className="h-28 w-full bg-white object-contain"
               />
               <Button
-                className="w-full text-xs bg-white border hover:bg-[#f3f4f6]"
+                className="w-full border bg-white text-xs hover:bg-[#f3f4f6]"
                 onClick={() => onChange({ ...plan, logoUrl: undefined })}
               >
                 Clear
@@ -65,14 +65,14 @@ export default function DayInlineEditor({ plan, onChange }: Props) {
             onFile={(file) => setFile("graphicUrl", file)}
           />
           {plan.graphicUrl && (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="overflow-hidden rounded-lg border">
               <img
                 src={plan.graphicUrl}
                 alt="Graphic preview"
-                className="w-full h-28 object-cover"
+                className="h-28 w-full object-cover"
               />
               <Button
-                className="w-full text-xs bg-white border hover:bg-[#f3f4f6]"
+                className="w-full border bg-white text-xs hover:bg-[#f3f4f6]"
                 onClick={() => onChange({ ...plan, graphicUrl: undefined })}
               >
                 Clear

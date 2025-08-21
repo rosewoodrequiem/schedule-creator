@@ -1,7 +1,7 @@
 import React from "react";
-import { useScheduleStore } from "../store/useScheduleStore";
-import { toISODate, weekDates } from "../utils/date";
-import Button from "./ui/Button";
+import { useScheduleStore } from "../../store/useScheduleStore";
+import { toISODate, weekDates } from "../../utils/date";
+import Button from "../ui/Button";
 
 export default function WeekPicker() {
   const weekStart = useScheduleStore((s) => s.week.weekStart);
@@ -24,7 +24,7 @@ export default function WeekPicker() {
       <div className="grid grid-cols-2 gap-2">
         <label className="text-xs">Week starts on</label>
         <select
-          className="border rounded-lg px-2 py-1"
+          className="rounded-lg border px-2 py-1"
           value={weekStart}
           onChange={(e) => updateWeek({ weekStart: e.target.value as any })}
         >
@@ -35,7 +35,7 @@ export default function WeekPicker() {
         <label className="text-xs">Any date in that week</label>
         <input
           type="date"
-          className="border rounded-lg px-2 py-1"
+          className="rounded-lg border px-2 py-1"
           value={anchorISO}
           onChange={(e) => updateWeek({ weekAnchorDate: e.target.value })}
         />
@@ -43,19 +43,19 @@ export default function WeekPicker() {
 
       <div className="flex items-center gap-2">
         <Button
-          className="bg-white border hover:bg-[#f3f4f6]"
+          className="border bg-white hover:bg-[#f3f4f6]"
           onClick={() => shiftWeeks(-1)}
         >
           ← Prev week
         </Button>
         <Button
-          className="bg-white border hover:bg-[#f3f4f6]"
+          className="border bg-white hover:bg-[#f3f4f6]"
           onClick={() => shiftWeeks(1)}
         >
           Next week →
         </Button>
         <Button
-          className="bg-white border hover:bg-[#f3f4f6]"
+          className="border bg-white hover:bg-[#f3f4f6]"
           onClick={() => updateWeek({ weekAnchorDate: toISODate(new Date()) })}
         >
           This week

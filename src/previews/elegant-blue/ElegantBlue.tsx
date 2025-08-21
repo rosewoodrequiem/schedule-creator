@@ -7,7 +7,7 @@ import {
   shortMonthDay,
   weekDates,
 } from "../../utils/date";
-import NoiseOverlay from "../../components/NoiseOverlay";
+import NoiseOverlay from "../../canvas/components/NoiseOverlay";
 import { DayCard } from "./DayCard";
 import GlowingBox from "./GlowBox";
 

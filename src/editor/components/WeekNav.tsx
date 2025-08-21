@@ -1,5 +1,5 @@
 // components/WeekNav.tsx
-import { useScheduleStore } from "../store/useScheduleStore";
+import { useScheduleStore } from "../../store/useScheduleStore";
 
 export function WeekNav() {
   const { nextWeek, prevWeek, weekOffset } = useScheduleStore();
@@ -8,14 +8,14 @@ export function WeekNav() {
     <div className="flex items-center justify-between gap-2 p-2">
       <button
         onClick={prevWeek}
-        className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 cursor-pointer"
+        className="cursor-pointer rounded bg-gray-700 px-3 py-1 hover:bg-gray-600"
       >
         ← Prev Week
       </button>
       <span className="text-sm font-medium">Week {weekOffset}</span>
       <button
         onClick={nextWeek}
-        className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 cursor-pointer"
+        className="cursor-pointer rounded bg-gray-700 px-3 py-1 hover:bg-gray-600"
       >
         Next Week →
       </button>
