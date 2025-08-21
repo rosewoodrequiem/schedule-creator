@@ -45,18 +45,27 @@ export function toISODate(d: Date) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-export function fmtDateTime(date: Date, timeHHMM: string, tz: string) {
+export function fmtTime(date: Date, timeHHMM: string, tz: string) {
   const [hh, mm] = timeHHMM.split(":").map(Number);
   const dt = new Date(date);
   dt.setHours(hh || 0, mm || 0, 0, 0);
   return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
     hour: "numeric",
     minute: "2-digit",
-    timeZone: tz,
-    timeZoneName: "short",
   }).format(dt);
+}
+
+export function fmtZone(date: Date, tz: string) {
+  return (
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      timeZoneName: "short",
+      year: "numeric",
+      day: "numeric",
+    })
+      .formatToParts(date)
+      .find((part) => part.type === "timeZoneName")?.value || tz
+  );
 }
 
 export function shortMonthDay(d: Date) {

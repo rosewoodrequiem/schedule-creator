@@ -2,12 +2,14 @@ import { useScheduleStore } from "../../store/useScheduleStore";
 import type { DayKey } from "../../types";
 import {
   DAY_LABELS,
-  fmtDateTime,
+  fmtTime,
+  fmtZone,
   shortMonthDay,
   weekDates,
 } from "../../utils/date";
 import NoiseOverlay from "../../components/NoiseOverlay";
 import { DayCard } from "./DayCard";
+import GlowingBox from "./GlowBox";
 
 export default function ElegantBlue({
   captureId = "capture-root",
@@ -75,8 +77,9 @@ export default function ElegantBlue({
               const idx = dayOrder.indexOf(key);
               const date = dates[idx];
               const when = plan.time
-                ? fmtDateTime(date, plan.time, plan.timezone)
+                ? fmtTime(date, plan.time, plan.timezone)
                 : "Time TBD";
+              const zone = fmtZone(date, plan.timezone);
               const formattedDate = shortMonthDay(date);
               return (
                 <DayCard
@@ -85,6 +88,7 @@ export default function ElegantBlue({
                   gameName={plan.gameName}
                   when={when}
                   date={formattedDate}
+                  zone={zone}
                   logoUrl={plan.logoUrl}
                   graphicUrl={plan.graphicUrl}
                 />
