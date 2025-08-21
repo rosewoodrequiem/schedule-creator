@@ -9,6 +9,7 @@ import TemplatePicker from "./components/TemplatePicker";
 import ScaledPreview from "./components/ScaledPreview";
 import Button from "./components/ui/Button";
 import DayAccordion from "./components/DayAccordion";
+import * as htmlToImage from "html-to-image";
 
 const SHORTS: Record<DayKey, string> = {
   sun: "Sun",
@@ -37,14 +38,12 @@ export default function App() {
     const src = document.getElementById("capture-root");
     if (!src) return;
 
-    // Ensure fonts are loaded
+    // Ensure fonts are ready
     // @ts-ignore
     if (document.fonts?.ready) await document.fonts.ready;
 
-    // Clone the node so we can render it at 1:1 scale with no transforms
+    // Optional: clone at 1:1 to avoid any CSS scale side-effects
     const clone = src.cloneNode(true) as HTMLElement;
-
-    // Make sure the clone is positioned off-screen and not scaled
     Object.assign(clone.style, {
       position: "fixed",
       left: "-100000px",
@@ -52,53 +51,25 @@ export default function App() {
       transform: "none",
       zoom: "1",
     });
-
-    // Important: ensure the clone has the intended fixed canvas size
-    // (your preview templates already set width/height inline, so this is usually redundant,
-    // but we keep it for safety in case you change templates)
-    clone.id = "capture-root-clone"; // avoid duplicate IDs during query
-
-    // Append to DOM so computed styles resolve correctly
+    clone.id = "capture-root-export";
     document.body.appendChild(clone);
 
-    const pixelRatio = Math.max(window.devicePixelRatio || 1, 2);
-    const targetScale = Math.max(exportScale || 2, pixelRatio * 1.5);
-
     try {
-      const canvas = await html2canvas(clone, {
-        scale: targetScale,
-        backgroundColor: null,
-        useCORS: true,
-        removeContainer: true,
-        // Extra safety: ignore any transforms on ancestors (we cloned, but this helps if you nest later)
-        onclone: (doc) => {
-          const el = doc.getElementById(
-            "capture-root-clone",
-          ) as HTMLElement | null;
-          if (el) {
-            // Force no transforms on the cloned tree’s ancestors as well
-            let p = el.parentElement;
-            while (p) {
-              p.style.transform = "none";
-              p = p.parentElement;
-            }
-          }
-        },
+      const pixelRatio = Math.max(window.devicePixelRatio || 1, 2);
+      const dataUrl = await htmlToImage.toPng(src, {
+        pixelRatio: Math.min(4, pixelRatio * 2), // 3–4 looks great
+        cacheBust: true,
+        // If you need to omit debug elements, you can filter nodes:
+        // filter: (node) => !node.classList?.contains('no-export'),
+        // You can also override styles for export only:
+        // style: { imageRendering: "auto" },
       });
 
-      const blob = await new Promise<Blob | null>((res) =>
-        canvas.toBlob((b) => res(b), "image/png"),
-      );
-      if (!blob) return;
-
-      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
+      a.href = dataUrl;
       a.download = "schedule.png";
       a.click();
-      URL.revokeObjectURL(url);
     } finally {
-      // Clean up the clone
       clone.remove();
     }
   }
