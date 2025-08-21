@@ -103,20 +103,19 @@ export default function ElegantBlue({
             <img
               src={hero}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain"
             />
           ) : (
             <div className="absolute inset-0 bg-[#6b87aa]" />
           )}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 hidden"
             style={{
               background:
                 "linear-gradient(90deg, rgba(144,164,191,0) 0%, rgba(144,164,191,0.65) 55%, rgba(144,164,191,0.85) 72%, rgba(144,164,191,0.95) 88%, rgba(144,164,191,1) 100%)",
             }}
           />
           <NoiseOverlay opacity={0.05} />
-          <div className="absolute inset-0 bg-black/10" />
         </div>
 
         {/* subtle canvas-wide noise */}

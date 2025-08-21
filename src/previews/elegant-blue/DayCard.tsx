@@ -45,23 +45,14 @@ export const DayCard: React.FC<DayCardProps> = ({
 
       {/* right banner */}
       <div className="relative h-full">
-        {graphicUrl ? (
+        {graphicUrl && (
           <img
             src={graphicUrl}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-        ) : (
-          <div className="absolute inset-0 bg-[#7e96b7]" />
         )}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(144,164,191,0) 0%, rgba(144,164,191,0.55) 55%, rgba(144,164,191,0.75) 72%, rgba(144,164,191,0.9) 88%, rgba(144,164,191,1) 100%)",
-          }}
-        />
-        <div className="absolute inset-0 ring-1 ring-white/40" />
+        <div className="from-base form-30% absolute inset-0 rounded-lg bg-gradient-to-r to-transparent" />
       </div>
 
       {/* Day Name */}
