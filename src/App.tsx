@@ -45,6 +45,7 @@ export default function App() {
       const dataUrl = await htmlToImage.toPng(src, {
         pixelRatio: Math.min(4, pixelRatio * 2), // 3–4 looks great
         cacheBust: true,
+        style: { imageRendering: "" },
         // If you need to omit debug elements, you can filter nodes:
         // filter: (node) => !node.classList?.contains('no-export'),
         // You can also override styles for export only:
