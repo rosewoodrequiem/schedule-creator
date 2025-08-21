@@ -73,7 +73,7 @@ export default function App() {
         // Extra safety: ignore any transforms on ancestors (we cloned, but this helps if you nest later)
         onclone: (doc) => {
           const el = doc.getElementById(
-            "capture-root-clone"
+            "capture-root-clone",
           ) as HTMLElement | null;
           if (el) {
             // Force no transforms on the cloned tree’s ancestors as well
@@ -87,7 +87,7 @@ export default function App() {
       });
 
       const blob = await new Promise<Blob | null>((res) =>
-        canvas.toBlob((b) => res(b), "image/png")
+        canvas.toBlob((b) => res(b), "image/png"),
       );
       if (!blob) return;
 
@@ -104,10 +104,10 @@ export default function App() {
   }
 
   return (
-    <div className="h-full grid md:grid-cols-[460px_1fr]">
+    <div className="grid h-full md:grid-cols-[460px_1fr]">
       {/* LEFT: Controls (scrollable) */}
-      <aside className="border-r p-4 space-y-4 bg-white sidebar-scroll">
-        <div className="flex items-center justify-between sticky top-0 bg-white pb-2">
+      <aside className="sidebar-scroll space-y-4 border-r bg-white p-4">
+        <div className="sticky top-0 flex items-center justify-between bg-white pb-2">
           <div className="text-lg font-bold">Schedule Maker</div>
           <Button
             onClick={handleExport}
@@ -128,7 +128,7 @@ export default function App() {
               max={4}
               value={exportScale}
               onChange={(e) => setExportScale(Number(e.target.value))}
-              className="ml-2 w-20 border rounded-lg px-2 py-1"
+              className="ml-2 w-20 rounded-lg border px-2 py-1"
             />
           </label>
         </div>
@@ -144,13 +144,11 @@ export default function App() {
               return (
                 <label
                   key={key}
-                  className={`flex items-center gap-2 px-3 py-1 border rounded-full cursor-pointer select-none
-                    ${
-                      enabled
-                        ? "bg-[--color-brand] text-black"
-                        : "bg-white text-black"
-                    }
-                    hover:brightness-105`}
+                  className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 select-none ${
+                    enabled
+                      ? "bg-[--color-brand] text-black"
+                      : "bg-white text-black"
+                  } hover:brightness-105`}
                 >
                   <input
                     type="checkbox"
@@ -195,7 +193,7 @@ export default function App() {
               }}
             />
             <Button
-              className="bg-white border hover:bg-[#f3f4f6]"
+              className="border bg-white hover:bg-[#f3f4f6]"
               onClick={() => setHeroUrl(undefined)}
             >
               Clear
@@ -237,7 +235,7 @@ export default function App() {
       </aside>
 
       {/* RIGHT: Preview (no scroll; scaled to fit) */}
-      <main className="p-4 overflow-hidden bg-[#f8fafc]">
+      <main className="overflow-hidden bg-[#f8fafc] p-4">
         <ScaledPreview targetWidth={1920} targetHeight={1080} margin={16}>
           <SchedulePreview />
         </ScaledPreview>
