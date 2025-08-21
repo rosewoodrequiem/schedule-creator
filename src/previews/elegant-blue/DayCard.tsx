@@ -65,8 +65,8 @@ export const DayCard: React.FC<DayCardProps> = ({
       </div>
 
       {/* Day Name */}
-      <div className="via-primary to-base absolute bottom-0 left-12 translate-y-1/2 bg-gradient-to-b from-transparent from-10% via-30% to-90% px-3 py-1 text-2xl font-extrabold tracking-widest backdrop-blur-md">
-        <div className="w-12 text-4xl tracking-widest uppercase">
+      <div className="via-primary/50 to-base absolute bottom-0 left-12 translate-y-1/2 bg-gradient-to-b from-transparent from-5% via-20% to-90% px-3 py-1 text-2xl font-extrabold tracking-widest backdrop-blur-md">
+        <div className="text-4xl tracking-widest uppercase">
           {day.substring(0, 3)}
         </div>
       </div>
