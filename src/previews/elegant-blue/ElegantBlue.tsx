@@ -47,16 +47,10 @@ export default function ElegantBlue({
         />
 
         {/* LEFT: header + cards (put above hero via z-index) */}
-        <div className="relative z-20 h-full">
+        <div className="relative z-20 h-full text-2xl">
           {/* week badge */}
-          <div className="absolute top-8 left-8">
-            <div
-              className="font-semibold] rounded-xl px-4 py-3"
-              style={{
-                background: "rgba(255,255,255,0.5)",
-                backdropFilter: "blur(4px)",
-              }}
-            >
+          <div className="absolute top-8 left-8" style={{ maxWidth: "130px" }}>
+            <div className="bg-primary rounded-xl px-4 py-3 font-semibold backdrop-blur-sm">
               {shortMonthDay(dates[0])} – {shortMonthDay(dates[6])}
             </div>
           </div>

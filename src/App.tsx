@@ -148,7 +148,15 @@ export default function App() {
               onChange={(e) => {
                 const f = e.target.files?.[0];
                 if (!f) return setHeroUrl(undefined);
-                setHeroUrl(URL.createObjectURL(f));
+
+                // Convert the file to a base64 string instead of using URL.createObjectURL
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  if (event.target?.result) {
+                    setHeroUrl(event.target.result as string);
+                  }
+                };
+                reader.readAsDataURL(f);
               }}
             />
             <Button
@@ -162,7 +170,7 @@ export default function App() {
 
         {/* Collapsible day cards for enabled days */}
         <div className="space-y-3 pt-2 pb-8">
-          {dayOrder.map((key, idx) => {
+          {dayOrder.map((key) => {
             const plan = week.days[key];
             if (!plan.enabled) return null;
 

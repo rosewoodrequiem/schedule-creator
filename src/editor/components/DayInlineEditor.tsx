@@ -8,8 +8,15 @@ type Props = { plan: DayPlan; onChange: (next: DayPlan) => void };
 export default function DayInlineEditor({ plan, onChange }: Props) {
   function setFile(key: "logoUrl" | "graphicUrl", file?: File) {
     if (!file) return onChange({ ...plan, [key]: undefined });
-    const url = URL.createObjectURL(file);
-    onChange({ ...plan, [key]: url });
+
+    // Convert file to base64 data URL
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        onChange({ ...plan, [key]: event.target.result as string });
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   return (

@@ -44,15 +44,15 @@ export const DayCard: React.FC<DayCardProps> = ({
       </div>
 
       {/* right banner */}
-      <div className="relative h-full">
+      <div className="relative h-full rounded-r-lg border border-transparent">
         {graphicUrl && (
           <img
             src={graphicUrl}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute h-full w-full rounded-r-lg object-cover"
           />
         )}
-        <div className="from-base form-30% absolute inset-0 rounded-lg bg-gradient-to-r to-transparent" />
+        <div className="from-base form-30% absolute inset-0 bg-gradient-to-r to-transparent" />
       </div>
 
       {/* Day Name */}
