@@ -8,16 +8,7 @@ import ScaledPreview from "./canvas/ScaledPreview";
 import Button from "./editor/ui/Button";
 import DayAccordion from "./editor/components/DayAccordion";
 import * as htmlToImage from "html-to-image";
-
-const SHORTS: Record<DayKey, string> = {
-  sun: "Sun",
-  mon: "Mon",
-  tue: "Tue",
-  wed: "Wed",
-  thu: "Thu",
-  fri: "Fri",
-  sat: "Sat",
-};
+import { SHORTS } from "./constants";
 
 export default function App() {
   const week = useScheduleStore((s) => s.week);
