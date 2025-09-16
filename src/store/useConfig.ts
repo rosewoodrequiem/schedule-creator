@@ -45,48 +45,47 @@ function makeDefaultWeek(): WeekPlan {
   return { weekAnchorDate: iso, weekStart: "mon", days }
 }
 
-export const createConfigStore = () =>
-  create<ConfigState>()(
-    persist(
-      (set) => ({
-        week: makeDefaultWeek(),
-        template: "ElegantBlue",
-        heroUrl: undefined,
-        exportScale: 2,
-        weekStart: "mon",
+export const useConfig = create<ConfigState>()(
+  persist(
+    (set) => ({
+      week: makeDefaultWeek(),
+      template: "ElegantBlue",
+      heroUrl: undefined,
+      exportScale: 2,
+      weekStart: "mon",
 
-        setTemplate: (t) => set({ template: t }),
-        setHeroUrl: (url) => set({ heroUrl: url }),
-        setExportScale: (scale) => set({ exportScale: scale }),
-        setWeekStart: (start) => set({ weekStart: start }),
+      setTemplate: (t) => set({ template: t }),
+      setHeroUrl: (url) => set({ heroUrl: url }),
+      setExportScale: (scale) => set({ exportScale: scale }),
+      setWeekStart: (start) => set({ weekStart: start }),
 
-        updateWeek: (patch) => set((s) => ({ week: { ...s.week, ...patch } })),
-        updateDay: (key, patch) =>
-          set((s) => ({
-            week: {
-              ...s.week,
-              days: {
-                ...s.week.days,
-                [key]: { ...s.week.days[key], ...patch },
-              },
+      updateWeek: (patch) => set((s) => ({ week: { ...s.week, ...patch } })),
+      updateDay: (key, patch) =>
+        set((s) => ({
+          week: {
+            ...s.week,
+            days: {
+              ...s.week.days,
+              [key]: { ...s.week.days[key], ...patch },
             },
-          })),
-        setDay: (key, next) =>
-          set((s) => ({
-            week: { ...s.week, days: { ...s.week.days, [key]: next } },
-          })),
-        resetDays: () =>
-          set((s) => {
-            const fresh = Object.fromEntries(
-              DAY_KEYS.map((k) => [k, { ...DEFAULT_DAY }]),
-            ) as Record<DayKey, DayPlan>
-            return { week: { ...s.week, days: fresh } }
-          }),
-      }),
-      {
-        name: "schedule-maker-config",
-        storage: createJSONStorage(() => storage),
-        version: 1,
-      },
-    ),
-  )
+          },
+        })),
+      setDay: (key, next) =>
+        set((s) => ({
+          week: { ...s.week, days: { ...s.week.days, [key]: next } },
+        })),
+      resetDays: () =>
+        set((s) => {
+          const fresh = Object.fromEntries(
+            DAY_KEYS.map((k) => [k, { ...DEFAULT_DAY }]),
+          ) as Record<DayKey, DayPlan>
+          return { week: { ...s.week, days: fresh } }
+        }),
+    }),
+    {
+      name: "schedule-maker-config",
+      storage: createJSONStorage(() => storage),
+      version: 1,
+    },
+  ),
+)
